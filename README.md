@@ -1,5 +1,6 @@
 # wendy-golang-training-beginner
-Beginner Golang training
+Beginner Golang training with Xendit colleagues
+Start date: 19 Apr 2021
 
 # Resources:
 - https://blog.golang.org/using-go-modules
