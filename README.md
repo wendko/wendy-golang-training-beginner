@@ -1,5 +1,5 @@
 # wendy-golang-training-beginner
-Beginner Golang training with Xendit colleagues
+Beginner Golang training with Xendit colleagues  
 Start date: 19 Apr 2021
 
 # Resources:
