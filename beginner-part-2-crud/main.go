@@ -20,6 +20,7 @@ func main() {
 	// Routes
 	e.GET("/", hello)
 	e.GET("/payment-codes", controller.GetPaymentCodes)
+	e.GET("/payment-codes/:id", controller.GetPaymentCode)
 	e.POST("/payment-codes", controller.CreatePaymentCode)
 
 	// Start server

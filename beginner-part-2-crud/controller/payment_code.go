@@ -14,15 +14,24 @@ import (
 // https://github.com/go-playground/validator/blob/master/_examples/simple/main.go
 var validate *validator.Validate
 
+func GenerateExpirationDate() time.Time {
+	newExpirationDate := time.Now()
+	newExpirationDate = newExpirationDate.AddDate(50, 0, 0)
+	return newExpirationDate
+}
+
 func GetPaymentCodes(c echo.Context) error {
 	paymentCodes, _ := GetRepoGetPaymentCodes()
 	return c.JSON(http.StatusOK, paymentCodes)
 }
 
-func GenerateExpirationDate() time.Time {
-	newExpirationDate := time.Now()
-	newExpirationDate = newExpirationDate.AddDate(50, 0, 0)
-	return newExpirationDate
+func GetPaymentCode(c echo.Context) error {
+	id := c.Param("id")
+	paymentCode, err := GetRepoGetPaymentCode(id)
+	if err != nil {
+		return c.JSON(http.StatusNotFound, err)
+	}
+	return c.JSON(http.StatusOK, paymentCode)
 }
 
 func CreatePaymentCode(c echo.Context) error {
@@ -56,16 +65,26 @@ func CreatePaymentCode(c echo.Context) error {
 }
 
 // Repositories
-
 func GetRepoGetPaymentCodes() ([]model.PaymentCode, error) {
 	db := storage.GetDBInstance()
-	paymentCode := []model.PaymentCode{}
+	paymentCodes := []model.PaymentCode{}
 
 	// Need to explicitly specify table name here
 	// if not, by convention table name is pluralized: https://gorm.io/docs/conventions.html#Pluralized-Table-Name
-	if err := db.Table("payment_code").Find(&paymentCode).Error; err != nil {
+	if err := db.Table("payment_code").Find(&paymentCodes).Error; err != nil {
 		return nil, err
 	}
+	return paymentCodes, nil
+}
+
+func GetRepoGetPaymentCode(id string) (*model.PaymentCode, error) {
+	db := storage.GetDBInstance()
+	paymentCode := &model.PaymentCode{}
+
+	if err := db.Table("payment_code").First(paymentCode, "id = ?", id).Error; err != nil {
+		return nil, err
+	}
+
 	return paymentCode, nil
 }
 

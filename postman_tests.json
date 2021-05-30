@@ -163,7 +163,7 @@
                                 "type": "text/javascript",
                                 "exec": [
                                     "const resBody = JSON.parse(responseBody);\r",
-                                    "const paymentCodeId = parseInt(pm.environment.get(\"part_2_payment_code_id\"));\r",
+                                    "const paymentCodeId = pm.environment.get(\"part_2_payment_code_id\");\r",
                                     "const paymentCodeName = pm.environment.get(\"part_2_payment_code_name\");\r",
                                     "\r",
                                     "pm.test(\"Should return a payment code with success status (200)\", function () {\r",
