@@ -11,7 +11,7 @@ CREATE TYPE "payment_code_status" AS ENUM(
 CREATE TABLE IF NOT EXISTS payment_code (
     id uuid NOT NULL DEFAULT uuid_generate_v4(),
     payment_code VARCHAR,
-    name VARCHAR,
+    name VARCHAR NOT NULL,
     status "payment_code_status",
     expiration_date VARCHAR,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),

@@ -2,26 +2,60 @@ package controller
 
 import (
 	"net/http"
+	"fmt"
+	"time"
 
 	"github.com/labstack/echo/v4"
+	"github.com/go-playground/validator"
 	"github.com/wendko/wendy-golang-training-beginner/beginner-part-2-crud/model"
 	"github.com/wendko/wendy-golang-training-beginner/beginner-part-2-crud/storage"
 )
+
+// https://github.com/go-playground/validator/blob/master/_examples/simple/main.go
+var validate *validator.Validate
 
 func GetPaymentCodes(c echo.Context) error {
 	paymentCodes, _ := GetRepoGetPaymentCodes()
 	return c.JSON(http.StatusOK, paymentCodes)
 }
 
-// func FindOnePaymentCode(c echo.Context) error {
-// 	paymentCode, _ := GetRepoFindPaymentCode()
-// 	return c.JSON(http.StatusOK, paymentCode)
-// }
+func GenerateExpirationDate() time.Time {
+	newExpirationDate := time.Now()
+	newExpirationDate = newExpirationDate.AddDate(50, 0, 0)
+	return newExpirationDate
+}
 
-// func CreatePaymentCode(c echo.Context) error {
-// 	paymentCodes, _ := GetRepoGetPaymentCodes()
-// 	return c.JSON(http.StatusOK, paymentCodes)
-// }
+func CreatePaymentCode(c echo.Context) error {
+	paymentCode := new(model.PaymentCode);
+
+	if err := c.Bind(paymentCode); err != nil {
+		return c.JSON(http.StatusBadRequest, err)
+	}
+
+	paymentCode.ExpirationDate = GenerateExpirationDate().String()
+
+	validate = validator.New()
+
+	if err := validate.Struct(paymentCode); err != nil {
+		message := ""
+
+		for _, err := range err.(validator.ValidationErrors) {
+			message = fmt.Sprintf("%s (%s) is %s. ", err.Namespace(), err.Type(), err.Tag())
+		}
+
+		return c.JSON(http.StatusBadRequest, message)
+	}
+
+	paymentCode, err := GetRepoCreatePaymentCode(paymentCode)
+
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err)
+	}
+
+	return c.JSON(http.StatusCreated, paymentCode)
+}
+
+// Repositories
 
 func GetRepoGetPaymentCodes() ([]model.PaymentCode, error) {
 	db := storage.GetDBInstance()
@@ -35,12 +69,11 @@ func GetRepoGetPaymentCodes() ([]model.PaymentCode, error) {
 	return paymentCode, nil
 }
 
-// func GetRepoFindPaymentCode(id string) ([]model.PaymentCode, error) {
-// 	db := storage.GetDBInstance()
-// 	paymentCodes := []model.PaymentCode{}
+func GetRepoCreatePaymentCode(paymentCode *model.PaymentCode) (*model.PaymentCode, error) {
+	db := storage.GetDBInstance()
 
-// 	if err := db.Find(&paymentCodes).Error; err != nil {
-// 		return nil, err
-// 	}
-// 	return paymentCodes, nil
-// }
+	if err := db.Table("payment_code").Create(&paymentCode).Error; err != nil {
+		return nil, err
+	}
+	return paymentCode, nil
+}

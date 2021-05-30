@@ -7,3 +7,5 @@ Start date: 19 Apr 2021
 - https://gobyexample.com/values
 - https://gobyexample.com/variables
 - https://gobyexample.com/constants
+- https://onexlab-io.medium.com/golang-postgres-gorm-echo-e2133eed295
+- https://gorm.io/docs/connecting_to_the_database.html

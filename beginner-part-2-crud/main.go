@@ -19,7 +19,8 @@ func main() {
 
 	// Routes
 	e.GET("/", hello)
-	e.GET("/payment_codes", controller.GetPaymentCodes)
+	e.GET("/payment-codes", controller.GetPaymentCodes)
+	e.POST("/payment-codes", controller.CreatePaymentCode)
 
 	// Start server
 	e.Logger.Fatal(e.Start(":1323"))
