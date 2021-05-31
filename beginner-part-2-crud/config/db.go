@@ -1,26 +1,26 @@
 package config
 
-import "fmt"
-
-const (
-	DBUser     = "test"
-	DBPassword = "test"
-	DBName     = "postgres"
-	DBHost     = "0.0.0.0"
-	DBPort     = "54322"
-	DBType     = "postgres"
+import (
+	"fmt"
+	"os"
 )
 
 func GetDBType() string {
-	return DBType
+	dBType := os.Getenv("DBType")
+	return dBType
 }
 
 func GetPostgresConnectionString() string {
+	dBHost := os.Getenv("DBHost")
+	dBPort := os.Getenv("DBPort")
+	dBUser := os.Getenv("DBUser")
+	dBName := os.Getenv("DBName")
+	dBPassword := os.Getenv("DBPassword")
 	dataBase := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable",
-		DBHost,
-		DBPort,
-		DBUser,
-		DBName,
-		DBPassword)
+		dBHost,
+		dBPort,
+		dBUser,
+		dBName,
+		dBPassword)
 	return dataBase
 }
